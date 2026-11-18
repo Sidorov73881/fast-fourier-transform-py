@@ -27,3 +27,10 @@ Python already has numerical FFTs, but they live in packages that are not part o
 ## The awkward edge
 
 The power-of-two restriction is the thing you will hit first. A call such as `fft([1, 2, 3])` raises `ValueError`; it does not pad for you. `convolve` and `multiply_polynomials` pad internally, so they accept arbitrary lengths. If you need a transform of a different length, zero-pad your input to the next power of two yourself and remember that the output then has that padded length.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
